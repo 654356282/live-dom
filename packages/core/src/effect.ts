@@ -1,7 +1,4 @@
-import { Dep } from "./dep";
-
 export class Effect {
-  public deps: Set<Dep> = new Set();
   public action: null | (() => void) = null;
   constructor(action: () => void) {
     this.action = action;

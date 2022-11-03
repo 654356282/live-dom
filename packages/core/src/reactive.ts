@@ -1,11 +1,11 @@
 import { is } from "shared";
-import { Dep } from "./dep";
-import { curEffect } from "./effect";
+import { curEffect, Effect } from "./effect";
 
 export type ReactData = string | number | boolean;
 
 export class Reactive<T extends ReactData> {
   value: T;
+  sources: Set<Effect> = new Set();
   constructor(value: T) {
     this.value = value;
   }
@@ -14,10 +14,8 @@ export class Reactive<T extends ReactData> {
 function reader<T extends ReactData>(r: Reactive<T>): T {
   const value = r.value;
 
-  if (curEffect) {
-    // 订阅主题
-    const dep = new Dep(r);
-    dep.effects.add(curEffect);
+  if (curEffect && !r.sources.has(curEffect)) {
+    r.sources.add(curEffect);
   }
 
   return value;
