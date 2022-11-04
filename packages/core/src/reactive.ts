@@ -3,12 +3,14 @@ import { curEffect, Effect } from "./effect";
 
 export type ReactData = string | number | boolean;
 
+
 export class Reactive<T extends ReactData> {
   value: T;
   sources: Set<Effect> = new Set();
   constructor(value: T) {
     this.value = value;
   }
+
 }
 
 function reader<T extends ReactData>(r: Reactive<T>): T {
@@ -30,6 +32,7 @@ function setter<T extends ReactData>(
   if (is(oldValue, newValue)) return;
 
   // 发布主题
+
 
   r.value = newValue;
 }

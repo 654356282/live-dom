@@ -5,7 +5,21 @@ let isSchedulering = false;
 let taskId = 0;
 let taskQueue: Task[] = [];
 
-port1.onmessage = function () {};
+port1.onmessage = performUnitOfWorkUntilDeadline;
+
+function performUnitOfWorkUntilDeadline() {
+  isSchedulering = false;
+  while (taskQueue.length) {
+    const task = taskQueue.pop();
+    try {
+      task?.callback();
+    } catch {}
+  }
+}
+
+function pushTask(task: Task) {
+  taskQueue.push(task);
+}
 
 function getCurrentTime() {
   return performance.now();
@@ -28,5 +42,6 @@ function requestCallback() {
 
 export function scheduleCallback(cb: () => void) {
   const task = new Task(cb);
-  taskQueue.push(task);
+  pushTask(task);
+  requestCallback();
 }
